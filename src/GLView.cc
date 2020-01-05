@@ -20,6 +20,10 @@
 
 GLView::GLView()
 {
+  px=0;
+  py=0;
+  pz=0;
+
   aspectratio = 1;
   showedges = false;
   showfaces = true;
@@ -124,6 +128,7 @@ void GLView::paintGL()
 
   auto bgcol = ColorMap::getColor(*this->colorscheme, RenderColor::BACKGROUND_COLOR);
   auto axescolor = ColorMap::getColor(*this->colorscheme, RenderColor::AXES_COLOR);
+  auto auxaxescolor = ColorMap::getColor(*this->colorscheme, RenderColor::CROSSHAIR_COLOR);
   auto crosshaircol = ColorMap::getColor(*this->colorscheme, RenderColor::CROSSHAIR_COLOR);
   glClearColor(bgcol[0], bgcol[1], bgcol[2], 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -134,8 +139,10 @@ void GLView::paintGL()
   glTranslated(cam.object_trans.x(), cam.object_trans.y(), cam.object_trans.z());
   // ...the axis lines need to follow the object translation.
   if (showaxes) GLView::showAxes(axescolor);
+  if (showaxes) GLView::showAuxAxes(auxaxescolor,px,py,pz);
   // mark the scale along the axis lines
   if (showaxes && showscale) GLView::showScalemarkers(axescolor);
+  if (showaxes && showscale) GLView::showAuxScalemarkers(axescolor);
 
   glEnable(GL_LIGHTING);
   glDepthFunc(GL_LESS);
@@ -416,6 +423,24 @@ void GLView::showSmallaxes(const Color4f &col)
   glEnd();
 }
 
+void GLView::showAuxAxes(const Color4f &col, double px, double py, double pz)
+{
+  auto l = cam.zoomValue();
+  
+  // Large gray axis cross inline with the model
+  glLineWidth(this->getDPI());
+  glColor3f(col[0], col[1], col[2]);
+
+  glBegin(GL_LINES);
+  glVertex3d(px, py, pz);
+  glVertex3d(px+l, py, pz);
+  glVertex3d(px, py, pz);
+  glVertex3d(px, py+l, pz);
+  glVertex3d(px, py, pz);
+  glVertex3d(px, py, pz+l);
+  glEnd();
+
+}
 void GLView::showAxes(const Color4f &col)
 {
   auto l = cam.zoomValue();
@@ -459,6 +484,79 @@ void GLView::showCrosshairs(const Color4f &col)
     glVertex3d(+xf*vd, +yf*vd, +vd);
   }
   glEnd();
+}
+
+void GLView::showAuxScalemarkers(const Color4f &col)
+{
+	// Add scale ticks on large axes
+	auto l = cam.zoomValue();
+	glLineWidth(this->getDPI());
+	glColor3f(col[0], col[1], col[2]);
+
+	// Take log of l, discretize, then exponentiate. This is done so that the tick
+	// denominations change every time the viewport gets 10x bigger or smaller,
+	// but stays constant in-between. l_adjusted is a step function of l.
+	const int log_l = static_cast<int>(floor(log10(l)));
+	const double l_adjusted = pow(10, log_l);
+
+	// Calculate tick width.
+	const double tick_width = l_adjusted / 10.0;
+
+	const int size_div_sm = 60; // divisor for l to determine minor tick size
+	int line_cnt = 0;
+	for (double i=0; i<l; i+=tick_width){ // i represents the position along the axis
+		int size_div;
+		if (line_cnt > 0 && line_cnt % 10 == 0){ // major tick
+			size_div = size_div_sm * .5; // resize to a major tick
+			GLView::decodeMarkerValue(i, l, size_div_sm);    // print number
+		} else {                    // minor tick
+			size_div = size_div_sm;      // set the minor tick to the standard size
+
+			// Draw additional labels if there are few major tick labels visible due to
+			// zoom. Because the spacing/units of major tick marks only change when the
+			// viewport changes size by a factor of 10, it can be hard to see the
+			// major tick labels when when the viewport is slightly larger than size at
+			// which the last tick spacing change occurred. When zoom level is such
+			// that very few major tick marks are visible, additional labels are drawn
+			// every 2 minor ticks. We can detect that very few major ticks are visible
+			// by checking if the viewport size is larger than the adjusted scale by
+			// only a small ratio.
+			const double more_labels_threshold = 3;
+			// draw additional labels every 2 minor ticks
+			const int more_labels_freq = 2;
+			if (line_cnt > 0 && line_cnt % more_labels_freq == 0 && l / l_adjusted < more_labels_threshold) {
+				GLView::decodeMarkerValue(i, l, size_div_sm);    // print number
+			}
+		}
+		line_cnt++;
+
+		/*
+		 * The length of each tick is proportional to the length of the axis
+		 * (which changes with the zoom value.)  l/size_div provides the
+		 * proportional length
+		 *
+		 * Commented glVertex3d lines provide additional 'arms' for the tick
+		 * the number of arms will (hopefully) eventually be driven via Preferences
+		 */
+
+		// positive axes
+		glBegin(GL_LINES);
+		// x
+		glVertex3d(i+px,py,pz); glVertex3d(i+px,-l/size_div+py,pz); // 1 arm
+		glVertex3d(i+px,py-l/size_div,pz); glVertex3d(i+px,py+l/size_div,pz); // 2 arms
+		//glVertex3d(i,0,-l/size_div); glVertex3d(i,0,l/size_div); // 4 arms (w/ 2 arms line)
+
+		// y
+		glVertex3d(px,i+py,pz); glVertex3d(px-l/size_div,i+py,pz); // 1 arm
+		glVertex3d(-l/size_div+px,i+py,pz); glVertex3d(l/size_div+px,i+py,pz); // 2 arms
+		//glVertex3d(0,i,-l/size_div); glVertex3d(0,i,l/size_div); // 4 arms (w/ 2 arms line)
+
+		// z
+		glVertex3d(px,py,i+pz); glVertex3d(-l/size_div+px,py,i+pz); // 1 arm
+		glVertex3d(px-l/size_div,py,i+pz); glVertex3d(px+l/size_div,py,i+pz); // 2 arms
+		//glVertex3d(0,-l/size_div,i); glVertex3d(0,l/size_div,i); // 4 arms (w/ 2 arms line)
+		glEnd();
+	}
 }
 
 void GLView::showScalemarkers(const Color4f &col)

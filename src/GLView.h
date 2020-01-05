@@ -45,6 +45,7 @@ public:
 
 	bool showAxes() const { return this->showaxes; }
 	void setShowAxes(bool enabled) { this->showaxes = enabled; }
+	void setAuxAxes(double px, double py, double pz) { this->px += px; this->py += py; this->pz += pz; }
 	bool showScaleProportional() const { return this->showscale; }
 	void setShowScaleProportional(bool enabled) { this->showscale = enabled; }
 	bool showEdges() const { return this->showedges; }
@@ -53,6 +54,10 @@ public:
 	void setShowFaces(bool enabled) { this->showfaces = enabled; }
 	bool showCrosshairs() const { return this->showcrosshairs; }
 	void setShowCrosshairs(bool enabled) { this->showcrosshairs = enabled; }
+
+	double getpx() { return this->px; }
+	double getpy() { return this->py; }
+	double getpz() { return this->pz; }
 
 	virtual bool save(const char *filename) = 0;
 	virtual std::string getRendererInfo() const = 0;
@@ -69,6 +74,8 @@ public:
 	bool showcrosshairs;
 	bool showscale;
 
+	double px,py,pz;
+
 #ifdef ENABLE_OPENCSG
 	GLint shaderinfo[11];
 	bool is_opencsg_capable;
@@ -81,7 +88,9 @@ public:
 private:
 	void showCrosshairs(const Color4f &col);
 	void showAxes(const Color4f &col);
+	void showAuxAxes(const Color4f &col,double px,double py,double pz);
 	void showSmallaxes(const Color4f &col);
 	void showScalemarkers(const Color4f &col);
+	void showAuxScalemarkers(const Color4f &col);
 	void decodeMarkerValue(double i, double l, int size_div_sm);
 };

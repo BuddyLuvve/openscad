@@ -89,6 +89,7 @@ void QGLView::init()
 
 void QGLView::resetView()
 {
+	px=0;py=0;pz=0;
 	cam.resetView();
 }
 
@@ -180,8 +181,11 @@ void QGLView::paintGL()
   GLView::paintGL();
 
   if (statusLabel) {
-		auto status = QString("%1 (%2x%3)")
+		auto status = QString("%1 AuxAxis = [ %2 %3 %4 ] (%5x%6)")
 			.arg(QString::fromStdString(cam.statusText()))
+			.arg(px)
+			.arg(py)
+			.arg(pz)
 			.arg(size().rwidth())
 			.arg(size().rheight());
     statusLabel->setText(status);
@@ -253,7 +257,31 @@ void QGLView::mouseMoveEvent(QMouseEvent *event)
       ) {
       // Left button rotates in xz, Shift-left rotates in xy
       // On Mac, Ctrl-Left is handled as right button on other platforms
-      if ((QApplication::keyboardModifiers() & Qt::ShiftModifier) != 0) {
+      if ((((QApplication::keyboardModifiers() & Qt::ControlModifier) !=0) & ((QApplication::keyboardModifiers() & Qt::AltModifier) !=0))) {
+      	    if ((QApplication::keyboardModifiers() & Qt::ShiftModifier) != 0) {
+		    dx=dx/20;
+	    }
+	      setAuxAxes(0,0,dx);
+	      updateGL();
+	      emit doAnimateUpdate();
+        }
+      else if ((QApplication::keyboardModifiers() & Qt::AltModifier) != 0) {
+      	    if ((QApplication::keyboardModifiers() & Qt::ShiftModifier) != 0) {
+		    dx=dx/20;
+	    }
+	      setAuxAxes(0,dx,0);
+	      updateGL();
+	      emit doAnimateUpdate();
+        }
+      else if ((QApplication::keyboardModifiers() & Qt::ControlModifier) != 0) {
+      	    if ((QApplication::keyboardModifiers() & Qt::ShiftModifier) != 0) {
+		    dx=dx/20;
+	    }
+	      setAuxAxes(dx,0,0);
+	      updateGL();
+	      emit doAnimateUpdate();
+        }
+      else if ((QApplication::keyboardModifiers() & Qt::ShiftModifier) != 0) {
                 rotate(dy, dx, 0.0, true);
 	}
       else {
