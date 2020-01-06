@@ -391,6 +391,7 @@
     <addaction name="separator"/>
     <addaction name="viewActionShowEdges"/>
     <addaction name="viewActionShowAxes"/>
+    <addaction name="viewActionShowAuxAxes"/>
     <addaction name="viewActionShowScaleProportional"/>
     <addaction name="viewActionShowCrosshairs"/>
     <addaction name="viewActionAnimate"/>
@@ -1090,6 +1091,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="viewActionShowAuxAxes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../openscad.qrc">
+     <normaloff>:/images/blackaxes.png</normaloff>:/images/blackaxes.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Auxiliary Axes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+R</string>
    </property>
   </action>
   <action name="viewActionShowCrosshairs">

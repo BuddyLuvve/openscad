@@ -28,6 +28,7 @@ GLView::GLView()
   showedges = false;
   showfaces = true;
   showaxes = false;
+  showauxaxes = false;
   showcrosshairs = false;
   showscale = false;
   renderer = nullptr;
@@ -139,10 +140,10 @@ void GLView::paintGL()
   glTranslated(cam.object_trans.x(), cam.object_trans.y(), cam.object_trans.z());
   // ...the axis lines need to follow the object translation.
   if (showaxes) GLView::showAxes(axescolor);
-  if (showaxes) GLView::showAuxAxes(auxaxescolor,px,py,pz);
+  if (showauxaxes) GLView::showAuxAxes(auxaxescolor,px,py,pz);
   // mark the scale along the axis lines
   if (showaxes && showscale) GLView::showScalemarkers(axescolor);
-  if (showaxes && showscale) GLView::showAuxScalemarkers(axescolor);
+  if (showauxaxes && showscale) GLView::showAuxScalemarkers(axescolor);
 
   glEnable(GL_LIGHTING);
   glDepthFunc(GL_LESS);

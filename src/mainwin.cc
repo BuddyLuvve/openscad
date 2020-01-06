@@ -390,6 +390,7 @@ MainWindow::MainWindow(const QStringList &filenames)
 	connect(this->viewActionThrownTogether, SIGNAL(triggered()), this, SLOT(viewModeThrownTogether()));
 	connect(this->viewActionShowEdges, SIGNAL(triggered()), this, SLOT(viewModeShowEdges()));
 	connect(this->viewActionShowAxes, SIGNAL(triggered()), this, SLOT(viewModeShowAxes()));
+	connect(this->viewActionShowAuxAxes, SIGNAL(triggered()), this, SLOT(viewModeShowAuxAxes()));
 	connect(this->viewActionShowCrosshairs, SIGNAL(triggered()), this, SLOT(viewModeShowCrosshairs()));
 	connect(this->viewActionShowScaleProportional, SIGNAL(triggered()), this, SLOT(viewModeShowScaleProportional()));
 	connect(this->viewActionAnimate, SIGNAL(triggered()), this, SLOT(viewModeAnimate()));
@@ -683,6 +684,10 @@ void MainWindow::loadViewSettings(){
 	if (settings.value("view/showAxes", true).toBool()) {
 		viewActionShowAxes->setChecked(true);
 		viewModeShowAxes();
+	}
+	if (settings.value("view/showAuxAxes", true).toBool()) {
+		viewActionShowAuxAxes->setChecked(true);
+		viewModeShowAuxAxes();
 	}
 	if (settings.value("view/showCrosshairs").toBool()) {
 		viewActionShowCrosshairs->setChecked(true);
@@ -2515,6 +2520,16 @@ void MainWindow::viewModeShowAxes()
 	settings.setValue("view/showAxes", showaxes);
 	this->viewActionShowScaleProportional->setEnabled(showaxes);
 	this->qglview->setShowAxes(showaxes);
+	this->qglview->updateGL();
+}
+
+void MainWindow::viewModeShowAuxAxes()
+{
+	bool showauxaxes = viewActionShowAuxAxes->isChecked();
+	QSettingsCached settings;
+	settings.setValue("view/showAuxAxes", showauxaxes);
+	this->viewActionShowScaleProportional->setEnabled(showauxaxes);
+	this->qglview->setShowAuxAxes(showauxaxes);
 	this->qglview->updateGL();
 }
 

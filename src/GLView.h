@@ -45,6 +45,7 @@ public:
 
 	bool showAxes() const { return this->showaxes; }
 	void setShowAxes(bool enabled) { this->showaxes = enabled; }
+	void setShowAuxAxes(bool enabled) { this->showauxaxes = enabled; }
 	void setAuxAxes(double px, double py, double pz) { this->px += px; this->py += py; this->pz += pz; }
 	bool showScaleProportional() const { return this->showscale; }
 	void setShowScaleProportional(bool enabled) { this->showscale = enabled; }
@@ -69,6 +70,7 @@ public:
 	double far_far_away;
 	double aspectratio;
 	bool showaxes;
+	bool showauxaxes;
 	bool showfaces;
 	bool showedges;
 	bool showcrosshairs;

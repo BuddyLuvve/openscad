@@ -252,6 +252,7 @@ public slots:
 	void viewModeThrownTogether();
 	void viewModeShowEdges();
 	void viewModeShowAxes();
+	void viewModeShowAuxAxes();
 	void viewModeShowCrosshairs();
 	void viewModeShowScaleProportional();
 	void viewModeAnimate();
