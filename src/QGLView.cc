@@ -89,7 +89,7 @@ void QGLView::init()
 
 void QGLView::resetView()
 {
-	px=0;py=0;pz=0;
+	auxAxes << 0,0,0;
 	cam.resetView();
 }
 
@@ -181,11 +181,11 @@ void QGLView::paintGL()
   GLView::paintGL();
 
   if (statusLabel) {
-		auto status = QString("%1 AuxAxis = [ %2 %3 %4 ] (%5x%6)")
+		auto status = QString("%1 AuxAxes = [ %2 %3 %4 ] (%5x%6)")
 			.arg(QString::fromStdString(cam.statusText()))
-			.arg(px)
-			.arg(py)
-			.arg(pz)
+			.arg(auxAxes.x())
+			.arg(auxAxes.y())
+			.arg(auxAxes.z())
 			.arg(size().rwidth())
 			.arg(size().rheight());
     statusLabel->setText(status);

@@ -20,9 +20,7 @@
 
 GLView::GLView()
 {
-  px=0;
-  py=0;
-  pz=0;
+  auxAxes << 0,0,0;
 
   aspectratio = 1;
   showedges = false;
@@ -140,7 +138,7 @@ void GLView::paintGL()
   glTranslated(cam.object_trans.x(), cam.object_trans.y(), cam.object_trans.z());
   // ...the axis lines need to follow the object translation.
   if (showaxes) GLView::showAxes(axescolor);
-  if (showauxaxes) GLView::showAuxAxes(auxaxescolor,px,py,pz);
+  if (showauxaxes) GLView::showAuxAxes(auxaxescolor,auxAxes.x(),auxAxes.y(),auxAxes.z());
   // mark the scale along the axis lines
   if (showaxes && showscale) GLView::showScalemarkers(axescolor);
   if (showauxaxes && showscale) GLView::showAuxScalemarkers(axescolor);
@@ -543,18 +541,18 @@ void GLView::showAuxScalemarkers(const Color4f &col)
 		// positive axes
 		glBegin(GL_LINES);
 		// x
-		glVertex3d(i+px,py,pz); glVertex3d(i+px,-l/size_div+py,pz); // 1 arm
-		glVertex3d(i+px,py-l/size_div,pz); glVertex3d(i+px,py+l/size_div,pz); // 2 arms
+		glVertex3d(i+auxAxes.x(),auxAxes.y(),auxAxes.z()); glVertex3d(i+auxAxes.x(),-l/size_div+auxAxes.y(),auxAxes.z()); // 1 arm
+		glVertex3d(i+auxAxes.x(),auxAxes.y()-l/size_div,auxAxes.z()); glVertex3d(i+auxAxes.x(),auxAxes.y()+l/size_div,auxAxes.z()); // 2 arms
 		//glVertex3d(i,0,-l/size_div); glVertex3d(i,0,l/size_div); // 4 arms (w/ 2 arms line)
 
 		// y
-		glVertex3d(px,i+py,pz); glVertex3d(px-l/size_div,i+py,pz); // 1 arm
-		glVertex3d(-l/size_div+px,i+py,pz); glVertex3d(l/size_div+px,i+py,pz); // 2 arms
+		glVertex3d(auxAxes.x(),i+auxAxes.y(),auxAxes.z()); glVertex3d(auxAxes.x()-l/size_div,i+auxAxes.y(),auxAxes.z()); // 1 arm
+		glVertex3d(-l/size_div+auxAxes.x(),i+auxAxes.y(),auxAxes.z()); glVertex3d(l/size_div+auxAxes.x(),i+auxAxes.y(),auxAxes.z()); // 2 arms
 		//glVertex3d(0,i,-l/size_div); glVertex3d(0,i,l/size_div); // 4 arms (w/ 2 arms line)
 
 		// z
-		glVertex3d(px,py,i+pz); glVertex3d(-l/size_div+px,py,i+pz); // 1 arm
-		glVertex3d(px-l/size_div,py,i+pz); glVertex3d(px+l/size_div,py,i+pz); // 2 arms
+		glVertex3d(auxAxes.x(),auxAxes.y(),i+auxAxes.z()); glVertex3d(-l/size_div+auxAxes.x(),auxAxes.y(),i+auxAxes.z()); // 1 arm
+		glVertex3d(auxAxes.x()-l/size_div,auxAxes.y(),i+auxAxes.z()); glVertex3d(auxAxes.x()+l/size_div,auxAxes.y(),i+auxAxes.z()); // 2 arms
 		//glVertex3d(0,-l/size_div,i); glVertex3d(0,l/size_div,i); // 4 arms (w/ 2 arms line)
 		glEnd();
 	}

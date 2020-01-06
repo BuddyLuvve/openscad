@@ -46,7 +46,7 @@ public:
 	bool showAxes() const { return this->showaxes; }
 	void setShowAxes(bool enabled) { this->showaxes = enabled; }
 	void setShowAuxAxes(bool enabled) { this->showauxaxes = enabled; }
-	void setAuxAxes(double px, double py, double pz) { this->px += px; this->py += py; this->pz += pz; }
+	void setAuxAxes(double px, double py, double pz) { this->auxAxes << this->auxAxes.x()+px, this->auxAxes.y()+py, this->auxAxes.z()+pz; }
 	bool showScaleProportional() const { return this->showscale; }
 	void setShowScaleProportional(bool enabled) { this->showscale = enabled; }
 	bool showEdges() const { return this->showedges; }
@@ -55,10 +55,6 @@ public:
 	void setShowFaces(bool enabled) { this->showfaces = enabled; }
 	bool showCrosshairs() const { return this->showcrosshairs; }
 	void setShowCrosshairs(bool enabled) { this->showcrosshairs = enabled; }
-
-	double getpx() { return this->px; }
-	double getpy() { return this->py; }
-	double getpz() { return this->pz; }
 
 	virtual bool save(const char *filename) = 0;
 	virtual std::string getRendererInfo() const = 0;
@@ -77,6 +73,7 @@ public:
 	bool showscale;
 
 	double px,py,pz;
+	Eigen::Vector3d auxAxes;
 
 #ifdef ENABLE_OPENCSG
 	GLint shaderinfo[11];
