@@ -543,17 +543,17 @@ void GLView::showAuxScalemarkers(const Color4f &col)
 		// x
 		glVertex3d(i+auxAxes.x(),auxAxes.y(),auxAxes.z()); glVertex3d(i+auxAxes.x(),-l/size_div+auxAxes.y(),auxAxes.z()); // 1 arm
 		glVertex3d(i+auxAxes.x(),auxAxes.y()-l/size_div,auxAxes.z()); glVertex3d(i+auxAxes.x(),auxAxes.y()+l/size_div,auxAxes.z()); // 2 arms
-		//glVertex3d(i,0,-l/size_div); glVertex3d(i,0,l/size_div); // 4 arms (w/ 2 arms line)
+		glVertex3d(i+auxAxes.x(),auxAxes.y(),auxAxes.z()-l/size_div); glVertex3d(i+auxAxes.x(),auxAxes.y(),auxAxes.z()+l/size_div); // 4 arms (w/ 2 arms line)
 
 		// y
 		glVertex3d(auxAxes.x(),i+auxAxes.y(),auxAxes.z()); glVertex3d(auxAxes.x()-l/size_div,i+auxAxes.y(),auxAxes.z()); // 1 arm
 		glVertex3d(-l/size_div+auxAxes.x(),i+auxAxes.y(),auxAxes.z()); glVertex3d(l/size_div+auxAxes.x(),i+auxAxes.y(),auxAxes.z()); // 2 arms
-		//glVertex3d(0,i,-l/size_div); glVertex3d(0,i,l/size_div); // 4 arms (w/ 2 arms line)
+		glVertex3d(auxAxes.x(),i+auxAxes.y(),auxAxes.z()-l/size_div); glVertex3d(auxAxes.x(),i+auxAxes.y(),auxAxes.z()+l/size_div); // 4 arms (w/ 2 arms line)
 
 		// z
 		glVertex3d(auxAxes.x(),auxAxes.y(),i+auxAxes.z()); glVertex3d(-l/size_div+auxAxes.x(),auxAxes.y(),i+auxAxes.z()); // 1 arm
 		glVertex3d(auxAxes.x()-l/size_div,auxAxes.y(),i+auxAxes.z()); glVertex3d(auxAxes.x()+l/size_div,auxAxes.y(),i+auxAxes.z()); // 2 arms
-		//glVertex3d(0,-l/size_div,i); glVertex3d(0,l/size_div,i); // 4 arms (w/ 2 arms line)
+		glVertex3d(auxAxes.x(),auxAxes.y()-l/size_div,i+auxAxes.z()); glVertex3d(auxAxes.x(),auxAxes.y()+l/size_div,auxAxes.z()+i); // 4 arms (w/ 2 arms line)
 		glEnd();
 	}
 }
